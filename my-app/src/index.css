@@ -48,4 +48,6 @@ body {
   .game-info {
     margin-left: 20px;
   }
-  
+  .text-bold{
+    font-weight: bold;
+  }  
