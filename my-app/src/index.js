@@ -22,25 +22,21 @@ import './index.css';
                 />
       );
     }
-  
     render() {
-     return (
+      const squareIndex = [ 1, 2, 3];
+      return (
         <div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
+         {[...Array(3)].map((x, i) =>
+          <tbody>
+            {[...Array(3)].map((x2, i2) =>
+              <Square 
+                key={i * 3 + i2} 
+                value={this.props.squares[i * 3 + i2]}
+                onClick={() => this.props.onClick(i * 3 + i2)}  
+              />
+            )}
+          </tbody>
+          )}
         </div>
       );
     }
