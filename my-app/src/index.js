@@ -5,7 +5,7 @@ import './index.css';
   function Square(props){
     return (
       <button
-        className="square"
+        className={props.class}
         onClick={props.onClick}
       >
         {props.value}
@@ -30,7 +30,8 @@ import './index.css';
           <div className="board-row" key={i}>
             {[...Array(3)].map((x2, i2) =>
               <Square 
-                key={i * 3 + i2} 
+                key={i * 3 + i2}
+                class={this.props.onWin(i * 3 + i2)} 
                 value={this.props.squares[i * 3 + i2]}
                 onClick={() => this.props.onClick(i * 3 + i2)}  
               />
@@ -86,6 +87,17 @@ import './index.css';
       });
     }
 
+    handleWin(i){
+      const history = this.state.history;
+      const current = history[this.state.stepNumber];
+      const winner = calculateWinner(current.squares);
+      if(winner){
+        return winner.includes(i) ? "square text-red" : "square";
+      } else {
+        return "square";
+      }
+    }
+
     render() {
       const history = this.state.history;
       const current = history[this.state.stepNumber];
@@ -130,7 +142,9 @@ import './index.css';
 
       let status;
       if(winner) {
-        status = 'Winner: ' + winner;
+        status = 'Winner: ' + current.squares[winner[0]];
+      } else if(!winner && history.length >= 10) {
+        status = 'Draw';
       } else {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
@@ -140,6 +154,7 @@ import './index.css';
             <Board 
               squares={current.squares}
               onClick={(i) => this.handleClick(i)}
+              onWin={(i) => this.handleWin(i)}
               />
           </div>
           <div className="game-info">
@@ -168,7 +183,7 @@ import './index.css';
     for(let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-        return squares[a];
+        return [a, b, c];
       }
     }
     return null;
