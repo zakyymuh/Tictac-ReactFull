@@ -25,9 +25,9 @@ import './index.css';
     render() {
       const squareIndex = [ 1, 2, 3];
       return (
-        <div>
+        <>
          {[...Array(3)].map((x, i) =>
-          <tbody>
+          <div className="board-row" key={i}>
             {[...Array(3)].map((x2, i2) =>
               <Square 
                 key={i * 3 + i2} 
@@ -35,9 +35,9 @@ import './index.css';
                 onClick={() => this.props.onClick(i * 3 + i2)}  
               />
             )}
-          </tbody>
+          </div>
           )}
-        </div>
+        </>
       );
     }
   }
@@ -52,6 +52,7 @@ import './index.css';
         }],
         xIsNext: true,
         stepNumber: 0,
+        isAsc: true,
       };
     }
     
@@ -104,7 +105,28 @@ import './index.css';
               </button>
             </li>
           );
-      });
+      }); 
+      
+      const movesDesc = [].concat(history)
+        .sort((a, b) => a.itemM > b.itemM ? 1 : -1)
+        .map((step, move) => {
+        const descMove = this.state.stepNumber - move;
+        const count = history.length - move;
+        const desc = count !== 1 ?
+          "Go to move #" + (count - 1) + " location: " + step.location:
+          "Go to game start";
+          return (
+            <li key={move}>
+              <button
+                className={(this.state.stepNumber == (count - 1)) ? 'text-bold' : ''} 
+                onClick={() => this.jumpTo(count - 1)}
+              >
+                {desc}
+              </button>
+            </li>
+          )}
+      );
+
 
       let status;
       if(winner) {
@@ -122,7 +144,10 @@ import './index.css';
           </div>
           <div className="game-info">
             <div>{status}</div>
-            <ol>{moves}</ol>
+            <ol>
+              <button onClick={() => this.setState({isAsc: !this.state.isAsc})}>Sort</button>
+            </ol>
+            <ol>{(this.state.isAsc) ? moves : movesDesc}</ol>
           </div>
         </div>
       );
